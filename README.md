@@ -4,7 +4,7 @@ This is a simple demo project to help you practice and learn Chrome DevTools.
 It includes an HTML page with buttons that trigger different behaviors, so you can explore how DevTools panels work.
 
 ---
-
+![Devtools Demo ss](image.png)
 ## Files
 - **devtools-demo.html** → The demo page to open in Chrome.
 - **README.md** → Instructions for using the demo.
