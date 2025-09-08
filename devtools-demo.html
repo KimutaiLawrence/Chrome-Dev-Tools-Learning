@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>DevTools demo</title>
+  <style>
+    .box { width:200px;height:120px;background:linear-gradient(45deg,#aaf,#58f);margin:20px;padding:10px;border-radius:8px;transition:transform .3s;}
+    .spin { animation:spin 2s linear infinite; }
+    @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+    .unused-rule { color: red; } /* intentionally unused for Coverage demo */
+  </style>
+</head>
+<body>
+  <h1 id="title">DevTools demo</h1>
+
+  <div id="box" class="box">Hover me / click buttons</div>
+
+  <button id="cpu">Run heavy CPU task</button>
+  <button id="fetch">Fetch (Network)</button>
+  <button id="leak">Create memory leak</button>
+  <button id="store">Set localStorage</button>
+  <button id="animate">Toggle spin animation</button>
+
+  <script>
+    document.getElementById('cpu').addEventListener('click', function cpu(){
+      // heavy synchronous task (for Performance)
+      let s = 0;
+      for (let i=0;i<1e8;i++){ s += (i%7); }
+      console.log('CPU done', s);
+    });
+
+    document.getElementById('fetch').addEventListener('click', async ()=>{
+      // simple fetch (Network panel)
+      try{
+        const r = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+        const j = await r.json();
+        console.log('fetched', j);
+      }catch(e){ console.error(e); }
+    });
+
+    let leakArr = null;
+    document.getElementById('leak').addEventListener('click', ()=>{
+      // simple "leak" via a growing array
+      leakArr = leakArr || [];
+      leakArr.push(new Array(1e5).fill(Math.random()));
+      console.log('leak size', leakArr.length);
+    });
+
+    document.getElementById('store').addEventListener('click', ()=>{
+      localStorage.setItem('demo', JSON.stringify({ts:Date.now()}));
+      console.log('localStorage set');
+    });
+
+    document.getElementById('animate').addEventListener('click', ()=>{
+      document.getElementById('box').classList.toggle('spin');
+    });
+
+    // To try Source breakpoints: add an event listener with a named function:
+    function clickHandler(){ console.log('clickHandler executed'); }
+    document.getElementById('box').addEventListener('click', clickHandler);
+  </script>
+</body>
+</html>
